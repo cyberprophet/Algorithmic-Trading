@@ -1,0 +1,8 @@
+﻿@page "/authentication/{action}"
+@inherits AuthenticationBase
+
+<div class="display">
+    <div class="loader action-container">
+        <Microsoft.AspNetCore.Components.WebAssembly.Authentication.RemoteAuthenticatorView Action="@Action" />
+    </div>
+</div>

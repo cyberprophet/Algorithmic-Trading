@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows8.0</TargetFramework>
+    <RootNamespace>ShareInvest</RootNamespace>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Install</AssemblyName>
+    <ApplicationIcon>money_accumulate.ico</ApplicationIcon>
+    <Version>0.3.21.2022</Version>
+    <Authors>cyberprophet</Authors>
+    <Company>ShareInvest</Company>
+    <Product>Algorithmic Trading</Product>
+    <Copyright>Copyright ⓒ 2022, ShareInvest Corp.</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="money_accumulate.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Models.March.2022\Models.March.2022.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

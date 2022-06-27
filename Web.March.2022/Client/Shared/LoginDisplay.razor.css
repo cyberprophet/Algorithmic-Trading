@@ -1,0 +1,26 @@
+﻿.terms-margin, .btn-padding
+{
+    margin: 0
+}
+
+@media (min-width: 641px)
+{
+    .nav-link
+    {
+        padding: 0 !important
+    }
+}
+
+@media (max-width: 640.98px)
+{
+
+    .terms-margin
+    {
+        margin: 0 .25rem 0 0
+    }
+
+    .btn-padding
+    {
+        padding: .375rem .25rem
+    }
+}

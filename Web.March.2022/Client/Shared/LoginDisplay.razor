@@ -1,0 +1,17 @@
+﻿@inherits LoginDisplayBase
+
+<AuthorizeView>
+    <Authorized>
+        <a href="terms" class="terms-margin">@nameof(Pages.Terms)</a>
+        <a href="authentication/profile">
+            <strong>
+                @context.User.Identity?.Name
+            </strong>
+        </a>
+        <button class="nav-link btn btn-link btn-padding" @onclick="BeginSignOut">LogOut</button>
+    </Authorized>
+    <NotAuthorized>
+        <a href="terms">@nameof(Pages.Terms)</a>
+        <a href="authentication/login">LogIn</a>
+    </NotAuthorized>
+</AuthorizeView>

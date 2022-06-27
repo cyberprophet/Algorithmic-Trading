@@ -1,0 +1,55 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ShareInvest.Server.Data.Models.CoreUser> SignInManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    var admin = "cyberprophet@hanmail.net".Equals(SignInManager.Context.User.Identity?.Name);
+}
+<ul class="nav nav-pills flex-column">
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">
+            Profile
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">
+            Password
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.LinkTheSecuritiesIdNavClass(ViewContext)" id="link-the-securities-id" asp-page="./LinkTheSecuritiesId">
+            Link the securities Id
+        </a>
+    </li>
+
+    @if (admin)
+    {
+        <li class="nav-item">
+            <a class="nav-link @ManageNavPages.GrantAdminPrivilegesNavClass(ViewContext)" id="grant-admin-privileges" asp-page="./GrantAdminPrivileges">
+                Grant admin privileges
+            </a>
+        </li>
+    }
+    @if (hasExternalLogins)
+    {
+        <li id="external-logins" class="nav-item">
+            <a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">
+                External logins
+            </a>
+        </li>
+    }
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">
+            Two-factor authentication
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">
+            Personal data
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/update/Install.zip" download>
+            Install
+        </a>
+    </li>
+</ul>

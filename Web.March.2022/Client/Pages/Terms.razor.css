@@ -1,0 +1,16 @@
+﻿.frame-container
+{
+    height: calc(100vh - 62.501px);
+    width: calc(100% + 3.53rem);
+    margin-top: -1.1rem;
+    margin-left: -2rem
+}
+
+@media (max-width: 641px)
+{
+    .frame-container
+    {
+        width: 100%;
+        margin: -1.1rem 0 0 0
+    }
+}

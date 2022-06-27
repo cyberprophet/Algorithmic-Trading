@@ -1,0 +1,37 @@
+﻿@page
+@model GrantAdminPrivilegesModel
+@{
+    ViewData["Title"] = "Grant admin privileges";
+    ViewData["ActivePage"] = ManageNavPages.GrantAdminPrivileges;
+}
+<h4>@ViewData["Title"]</h4>
+
+<div class="row">
+
+    @if (Model.Securities is not null)
+    {
+        <div class="col-md-9">
+            <form method="post">
+
+                @foreach (var fc in Model.Securities)
+                {
+                    <label for="@fc.Key">
+                        <em>
+                            @Enum.GetName(typeof(ShareInvest.Interface.Securities), fc.Company)
+                        </em>
+                        <input type="text" readonly class="form-control" value="@fc.Name" id="@fc.Key " />
+                    </label>
+                    <div class="from-group">
+                        <input type="radio" class="form-contorl-check" value="@fc.Key" id="@fc.Id" name="admin" @(fc.IsAdministrator ? "checked" : string.Empty) />
+                        <label for="@fc.Id">
+                            @fc.Key
+                        </label>
+                    </div>
+                }
+                <button class="btn btn-primary" type="submit">
+                    Submit
+                </button>
+            </form>
+        </div>
+    }
+</div>

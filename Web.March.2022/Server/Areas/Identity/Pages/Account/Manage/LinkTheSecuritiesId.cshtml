@@ -1,0 +1,47 @@
+﻿@page
+@model LinkTheSecuritiesIdModel
+@{
+    ViewData["Title"] = "Link the Securities Id";
+    ViewData["ActivePage"] = ManageNavPages.LinkTheSecuritiesId;
+}
+<h4>@ViewData["Title"]</h4>
+
+<div class="row">
+
+    @if (Model.Securities is not null)
+    {
+        <div class="col-md-6">
+
+            @foreach (var fc in Model.Securities)
+            {
+                <label for="@fc.Key">
+                    <em>
+                        @Enum.GetName(typeof(ShareInvest.Interface.Securities), fc.Company)
+                    </em>
+                    <input type="text" readonly class="form-control" value="@fc.Name" id="@fc.Key" />
+                </label>
+            }
+        </div>
+    }
+    <div class="col-md-6">
+        <form method="post">
+            <label for="securities">
+                <em>Securities</em>
+                <input type="search" class="form-control" id="securities" list="securities-list" name="securities" />
+            </label>
+            <label for="securities-id">
+                <em>Id</em>
+                <input type="text" class="form-control" id="securities-id" name="id" />
+            </label>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+<datalist id="securities-list">
+    @foreach (var item in Enum.GetValues<ShareInvest.Interface.Securities>())
+    {
+        <option value="@((int)item)">@item</option>
+    }
+</datalist>

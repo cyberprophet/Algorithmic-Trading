@@ -1,0 +1,479 @@
+﻿@page "/"
+@inherits IndexBase
+
+@if (Pairs?.Count > 0)
+{
+    <center class="lookup-container @(IsLoading ? "lookup-container-index" : string.Empty)">
+        <div class="display">
+            <div class="loader">
+                <strong>
+                    <em>This is the @(Render.ToString("N0")) screen adjustment.</em>
+                </strong>
+            </div>
+        </div>
+    </center>
+
+    @if (IsBoardClicked)
+    {
+        <div id="grid-container">
+            <div class="grid-hide-button">
+                <button class="hide-button" type="button" @onclick="async e => await Task.Run(() => OnBoardClick(e))" />
+                <div class="grid-hide-time" id="hide-button-time">@DateTime.Now.ToString("HH : mm : ss")</div>
+            </div>
+            <div class="grid-header-flex">
+                <div class="grid-sub-wrap">
+                    <input class="grid-opacity-slider" type="range" min="15" max="100" value="75" oninput="setGridOpacity(this.value / 100)" />
+                </div>
+                <div class="grid-tab-background">
+                    <div class="grid-tab-wrap-gradient" />
+                    <div class="grid-tab-wrap">
+
+                        @foreach (var title in Enum.GetValues<LabelOfTitle>())
+                        {
+                            <input class="grid-tab-input" name="grid-title-tabs" type="radio" id="@string.Concat((char)title, '-', title)" @onclick="e => OnClick((int)title, e)" disabled="@GetDisable((int)title)" />
+                            <label class="grid-tab-label" for="@string.Concat((char)title, '-', title)" title="@GetName((int)title)">
+                                @title
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @switch ((LabelOfTitle)IsSelectedLabel)
+            {
+                case LabelOfTitle.Chart when string.IsNullOrEmpty(IsSelectedStock) is false:
+                    <div class="grid-scroller grid-chart-scroller">
+                        <div class="grid-chart-container">
+                            <div class="grid-stock-chart-scroller" id="candlestick-chart" />
+                            <div class="grid-stock-period-scroller" id="candlestick-period" />
+                        </div>
+                    </div>
+                    break;
+
+                case LabelOfTitle.Stock when SortListedStocks is not null:
+                    <div class="grid-scroller grid-stock-scroller">
+                        <div class="grid-order-by-container">
+                        </div>
+                        <div class="grid-stock-container">
+
+                            @foreach (var model in SortListedStocks)
+                            {
+                                <div class="grid-stock-item">
+                                    <div class="grid-stock-item-code">
+                                        @model.Code
+                                    </div>
+                                    <div class="grid-stock-item-non-link-ellipsis" title="@model.Name">
+
+                                        @if (string.IsNullOrEmpty(model.Code) is false)
+                                        {
+                                            @if (Pairs.TryGetValue(model.Code, out Models.OpenAPI.Stock? stock) && stock.Overview is not null)
+                                            {
+                                                <button class="grid-stock-item-btn grid-stock-item-ellipsis" @onclick="async e => await OnClick(stock, e)">
+                                                    @model.Name
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <div class="grid-stock-item-ellipsis">
+                                                    @model.Name
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                    <div id="grid-stock-item-@model.Code" class="grid-stock-item-information-container">
+
+                                        @if (int.TryParse(model.Current, out int price))
+                                        {
+                                            <div class="grid-stock-item-price-@GetCurrentColor(model.Current[0]) grid-stock-item-information">
+                                                @(price == 0 ? string.Empty : Math.Abs(price).ToString("N0"))
+                                            </div>
+                                        }
+                                        @if (double.TryParse(model.Rate, out double rate))
+                                        {
+                                            <div class="grid-stock-item-price-@GetCurrentColor(model.Rate[0]) grid-stock-item-rate grid-stock-item-information">
+                                                @(char.IsDigit(model.Rate[0]) ? string.Empty : (Math.Abs(rate) * 1e-2).ToString("P2"))
+                                            </div>
+                                        }
+                                        @if (long.TryParse(model.Volume, out long volume))
+                                        {
+                                            var state = model.State?.Split('|');
+
+                                            <div class="grid-stock-item-volume grid-stock-item-information">
+                                                @(volume > 0 ? volume.ToString("N0") : state?.Length > 1 ? state[1] : volume)
+                                            </div>
+                                        }
+                                        @if (int.TryParse(model.CompareToPreviousDay, out int previous))
+                                        {
+                                            <div class="grid-stock-item-price-@GetCurrentColor(model.CompareToPreviousDay[0]) grid-stock-item-previous-day grid-stock-item-information">
+
+                                                @if (int.TryParse(model.CompareToPreviousSign, out int sign) && sign != 3)
+                                                {
+                                                    <span class="oi oi-@(Enum.GetName(typeof(Models.Sign), sign)?.Replace('_', '-')) oi-padding" />
+                                                }
+                                                @(char.IsDigit(model.CompareToPreviousDay[0]) ? string.Empty : Math.Abs(previous).ToString("N0"))
+                                            </div>
+                                        }
+                                        @if (int.TryParse(model.TransactionAmount, out int amount))
+                                        {
+                                            <div class="grid-stock-item-transaction-amount grid-stock-item-information">
+                                                @(amount > 0 ? amount.ToString("N0") : string.Empty)
+                                            </div>
+                                        }
+                                        <div class="grid-stock-item-information">
+                                            <div class="grid-stock-item-chart" />
+                                            <div class="grid-stock-item-chart" />
+                                            <div class="grid-stock-item-chart" />
+                                            <div class="grid-stock-item-chart" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    break;
+
+                case LabelOfTitle.Account when Accounts is not null && Accounts.Count > 0:
+                    <div class="grid-scroller grid-account-scroller">
+
+                        @if (Accounts.Count > 1)
+                        {
+                            <div class="grid-account-container">
+                                <div class="grid-account-item">
+                                    <div class="grid-account-item-subject">보유종목</div>
+                                    <div class="grid-account-item-contents">
+                                        @(Accounts.Sum(o => int.TryParse(o.NumberOfPrints, out int np) ? np : 0) is int snp && snp > 0 ? snp.ToString("N0") : string.Empty)
+                                    </div>
+                                </div>
+                                <div class="grid-account-item">
+                                    <div class="grid-account-item-subject">유가잔고</div>
+                                    <div class="grid-account-item-contents">
+                                        @(Accounts.Sum(o => long.TryParse(o.Balance, out long bal) ? bal : 0) is long sb && sb > 0 ? sb.ToString("C0") : string.Empty)
+                                    </div>
+                                </div>
+                                <div class="grid-account-item">
+                                    <div class="grid-account-item-subject">예탁자산</div>
+                                    <div class="grid-account-item-contents">
+                                        @(Accounts.Sum(o => long.TryParse(o.Asset, out long asset) ? asset : 0) is long sa && sa > 0 ? sa.ToString("C0") : string.Empty)
+                                    </div>
+                                </div>
+                                <div class="grid-account-item">
+                                    <div class="grid-account-item-subject">추정예탁자산</div>
+                                    <div class="grid-account-item-contents">
+                                        @(Accounts.Sum(o => long.TryParse(o.PresumeAsset, out long pa) ? pa : 0) is long spa && spa > 0 ? spa.ToString("C0") : string.Empty)
+                                    </div>
+                                </div>
+                                <div class="grid-account-item">
+                                    <div class="grid-account-item-subject">예수금</div>
+                                    <div class="grid-account-item-contents">
+                                        @(Accounts.Sum(o => long.TryParse(o.Deposit, out long deposit) ? deposit : 0) is long sdp && sdp > 0 ? sdp.ToString("C0") : string.Empty)
+                                    </div>
+                                </div>
+                                <div class="grid-account-item">
+                                    <div class="grid-account-item-subject">D+2예수금</div>
+                                    <div class="grid-account-item-contents">
+                                        @(Accounts.Sum(o => long.TryParse(o.PresumeDeposit, out long pd) ? pd : 0) is long spd && spd > 0 ? spd.ToString("C0") : string.Empty)
+                                    </div>
+                                </div>
+                                <div class="grid-account-item">
+                                    <div class="grid-account-item-subject">총매입</div>
+                                    <div class="grid-account-item-contents">
+                                        @(Accounts.Sum(o => long.TryParse(o.TotalPurchaseAmount, out long total) ? total : 0) is long tp && tp > 0 ? tp.ToString("C0") : string.Empty)
+                                    </div>
+                                </div>
+                                <div class="grid-account-item">
+                                    <div class="grid-account-item-subject">주문가능금액</div>
+                                    <div class="grid-account-item-contents">
+                                        &nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-account-chart-container">
+                                <div class="grid-account-chart-scroller" id="total-chart-account" />
+                                <div class="grid-account-period-scroller" id="total-period-account" />
+                            </div>
+                        }
+                        @foreach (var ac in Accounts)
+                        {
+                            <label class="grid-account-label">
+                                <span class="grid-account-span">
+                                    <strong>
+                                        <em>@Enum.GetName(typeof(Interface.Securities), ac.Company)</em>
+                                    </strong>
+                                </span>
+                                <input class="form-control account-control" value="@ac.Acc" type="text" readonly />
+
+                                @if (string.IsNullOrEmpty(ac.AccNo) is false && string.IsNullOrEmpty(ac.Key) is false)
+                                {
+                                    <button @onclick="async e => await OnClick(new Interface.OpenAPI.OPW00004
+                                        {
+                                            Value = new[] { ac.AccNo, ac.Key }
+                                        },
+                                        e)" id="@string.Concat(nameof(Interface.OpenAPI.OPW00004), ac.AccNo, ac.Key)" class="btn btn-primary btn-account" type="button">
+                                        @(new Interface.OpenAPI.OPW00004().RQName)
+                                    </button>
+                                }
+                            </label>
+                            <div class="grid-account-container">
+                                <div class="grid-account-item">
+                                    <div class="grid-account-item-subject">보유종목</div>
+                                    <div class="grid-account-item-contents">
+                                        @(int.TryParse(ac.NumberOfPrints, out int np) && np > 0 ? np.ToString("N0") : string.Empty)
+                                    </div>
+                                </div>
+                                <div class="grid-account-item">
+                                    <div class="grid-account-item-subject">유가잔고</div>
+                                    <div class="grid-account-item-contents">
+                                        @(long.TryParse(ac.Balance, out long bal) && bal > 0 ? bal.ToString("C0") : string.Empty)
+                                    </div>
+                                </div>
+                                <div class="grid-account-item">
+                                    <div class="grid-account-item-subject">예탁자산</div>
+                                    <div class="grid-account-item-contents">
+                                        @(long.TryParse(ac.Asset, out long asset) && asset > 0 ? asset.ToString("C0") : string.Empty)
+                                    </div>
+                                </div>
+                                <div class="grid-account-item">
+                                    <div class="grid-account-item-subject">추정예탁자산</div>
+                                    <div class="grid-account-item-contents">
+                                        @(long.TryParse(ac.PresumeAsset, out long pa) && pa > 0 ? pa.ToString("C0") : string.Empty)
+                                    </div>
+                                </div>
+                                <div class="grid-account-item">
+                                    <div class="grid-account-item-subject">예수금</div>
+                                    <div class="grid-account-item-contents">
+                                        @(long.TryParse(ac.Deposit, out long deposit) && deposit > 0 ? deposit.ToString("C0") : string.Empty)
+                                    </div>
+                                </div>
+                                <div class="grid-account-item">
+                                    <div class="grid-account-item-subject">D+2예수금</div>
+                                    <div class="grid-account-item-contents">
+                                        @(long.TryParse(ac.PresumeDeposit, out long pd) && pd > 0 ? pd.ToString("C0") : string.Empty)
+                                    </div>
+                                </div>
+                                <div class="grid-account-item">
+                                    <div class="grid-account-item-subject">총매입</div>
+                                    <div class="grid-account-item-contents">
+                                        @(long.TryParse(ac.TotalPurchaseAmount, out long total) && total > 0 ? total.ToString("C0") : string.Empty)
+                                    </div>
+                                </div>
+                                <div class="grid-account-item">
+                                    <div class="grid-account-item-subject">주문가능금액</div>
+                                    <div class="grid-account-item-contents">
+                                        &nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grid-account-chart-container">
+                                <div class="grid-account-chart-scroller" id="@string.Concat(ac.Key, "chart", ac.AccNo)" />
+                                <div class="grid-account-period-scroller" id="@string.Concat(ac.Key, "period", ac.AccNo)" />
+                            </div>
+
+                            @if (ac.Balances.Any())
+                            {
+                                <div class="grid-balance">
+                                    <div class="grid-balance-container">
+                                        <div class="grid-balance-item grid-account-item-subject">&nbsp;</div>
+                                        <div class="grid-balance-item grid-account-item-subject">보유량</div>
+                                        <div class="grid-balance-item grid-account-item-subject">결제잔고</div>
+                                        <div class="grid-balance-item grid-account-item-subject">전일</div>
+                                        <div class="grid-balance-item grid-account-item-subject">금일</div>
+                                        <div class="grid-balance-item grid-account-item-subject">매입가</div>
+                                        <div class="grid-balance-item grid-account-item-subject">현재가</div>
+                                        <div class="grid-balance-item grid-account-item-subject">평가손익</div>
+                                        <div class="grid-balance-item grid-account-item-subject">수익률</div>
+                                        <div class="grid-balance-item grid-account-item-subject">매입금액</div>
+                                        <div class="grid-balance-item grid-account-item-subject">평가금액</div>
+                                    </div>
+
+                                    @foreach (var bc in ac.Balances)
+                                    {
+                                        string pqColor = string.Empty, sqColor = string.Empty,
+                                        amountColor = string.IsNullOrEmpty(bc.Amount) is false && bc.Amount[0] == '-' ? "blue" : "red",
+                                        rateColor = string.IsNullOrEmpty(bc.Rate) is false && bc.Rate[0] == '-' ? "blue" : "red";
+                                        int pqNum = 0, sqNum = 0;
+
+                                        if (int.TryParse(bc.PreviousPurchaseQuantity, out int pq) && int.TryParse(bc.PreviousSalesQuantity, out int sq) &&
+                                        int.TryParse(bc.PurchaseQuantity, out int q) && int.TryParse(bc.SalesQuantity, out int s))
+                                        {
+                                            pqColor = pq - sq > 0 ? "red" : "blue";
+                                            sqColor = q - s > 0 ? "red" : "blue";
+                                            pqNum = Math.Abs(pq - sq);
+                                            sqNum = Math.Abs(q - s);
+                                        }
+                                        <div class="grid-balance-container">
+                                            <div class="grid-balance-item" title="@bc.Code">@bc.Name</div>
+                                            <div class="grid-balance-item">
+                                                @(int.TryParse(bc.Quantity, out int quantity) && quantity > 0 ? quantity.ToString("N0") : string.Empty)
+                                            </div>
+                                            <div class="grid-balance-item">
+                                                @(int.TryParse(bc.PaymentBalance, out int pay) && pay > 0 ? pay.ToString("N0") : string.Empty)
+                                            </div>
+                                            <div class="grid-balance-item grid-balance-@(pqColor)-color">
+                                                @(pqNum == 0 ? string.Empty : pqNum.ToString("N0"))
+                                            </div>
+                                            <div class="grid-balance-item grid-balance-@(sqColor)-color">
+                                                @(sqNum == 0 ? string.Empty : sqNum.ToString("N0"))
+                                            </div>
+                                            <div class="grid-balance-item">
+                                                @(int.TryParse(bc.Average, out int average) ? average.ToString("N0") : string.Empty)
+                                            </div>
+                                            <div class="grid-balance-item">
+                                                @(int.TryParse(bc.Current, out int current) && current > 0 ? current.ToString("N0") : string.Empty)
+                                            </div>
+                                            <div class="grid-balance-item grid-balance-@(amountColor)-color">
+                                                @(long.TryParse(bc.Amount, out long amount) && amount != 0 ? Math.Abs(amount).ToString("C0") : string.Empty)
+                                            </div>
+                                            <div class="grid-balance-item grid-balance-@(rateColor)-color">
+                                                @(double.TryParse(bc.Rate, out double rate) && rate != 0 ? (Math.Abs(rate) * 1e-6).ToString("P2") : string.Empty)
+                                            </div>
+                                            <div class="grid-balance-item">
+                                                @(long.TryParse(bc.Purchase, out long purchase) ? purchase.ToString("C0") : string.Empty)
+                                            </div>
+                                            <div class="grid-balance-item">
+                                                @(long.TryParse(bc.Evaluation, out long evaluation) && evaluation > 0 ? evaluation.ToString("C0") : string.Empty)
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        }
+                    </div>
+                    break;
+
+                default:
+                    Navigation?.NavigateTo("authentication/profile");
+                    break;
+            }
+        </div>
+    }
+    else
+    {
+        <div class="show-btn" @onclick="async e => await OnClick(e)">
+            <div class="chart-icon" title="Import linked account information."></div>
+        </div>
+    }
+    <div id="map"></div>
+    <div class="rendering-container rendering-quote-container" @onclick="async e => await Task.Run(() => OpenTheInfoWindow(e))">
+
+        @if (IsUnfold)
+        {
+            <span class="oi oi-fullscreen-exit" />
+        }
+        else
+        {
+            <span class="oi oi-fullscreen-enter" />
+        }
+    </div>
+    <div class="rendering-container rendering-operation-container" @onclick="async e => await Task.Run(() => PressTheButton(e))">
+
+        @if (IsPlayed)
+        {
+            <span class="oi oi-media-pause" />
+        }
+        else
+        {
+            <span class="oi oi-media-play" />
+        }
+    </div>
+    <div id="float-end-container" class="@(IsUnfold ? "float-width-container" : "float-none-container")">
+        <div class="grid-hide-button">
+            <button class="hide-button" type="button" @onclick="async e => await Task.Run(() => OpenTheInfoWindow(e))" />
+        </div>
+        <div class="grid-tab-background grid-sub-tab-background">
+            <div class="grid-tab-wrap">
+
+                @foreach (var title in Enum.GetValues<LabelOfSubTitle>())
+                {
+                    <input @onclick="e => OnClick((char)title, e)" class="grid-tab-input" name="grid-sub-title-tabs" id="@string.Concat((char)title, '-', title)" type="radio" disabled="@GetDisable((int)title)" />
+                    <label class="grid-tab-label" for="@string.Concat((char)title, '-', title)" title="@GetName((int)title)">
+                        @title
+                    </label>
+                }
+            </div>
+        </div>
+
+        @switch ((LabelOfSubTitle)IsSelectedSubTitle)
+        {
+            case LabelOfSubTitle.Chat:
+
+                break;
+
+            case LabelOfSubTitle.Quotes when string.IsNullOrEmpty(IsSelectedStock) is false:
+
+                <div class="stock-quotes-grid-container">
+                    <div>
+
+                        @for (int i = 0; i < 0xA; i++)
+                        {
+                            <div class="stock-quotes-grid-item-container">
+                            </div>
+                        }
+                    </div>
+                    <div id="stock-quotes-grid-sell-price">
+
+                        @for (int i = 0; i < 0xA; i++)
+                        {
+                            <div class="stock-quotes-grid-item-container">
+                                <div class="stock-quotes-grid-price stock-quotes-grid-item" />
+                                <div class="stock-quotes-grid-percent" />
+                            </div>
+                        }
+                    </div>
+                    <div>
+
+                        @for (int i = 0; i < 0xA; i++)
+                        {
+                            <div class="stock-quotes-grid-item-container">
+                            </div>
+                        }
+                    </div>
+                    <div>
+
+                        @for (int i = 0; i < 0xA; i++)
+                        {
+                            <div class="stock-quotes-grid-item-container">
+                            </div>
+                        }
+                    </div>
+                    <div id="stock-quotes-grid-buy-price">
+
+                        @for (int i = 0; i < 0xA; i++)
+                        {
+                            <div class="stock-quotes-grid-item-container">
+                                <div class="stock-quotes-grid-price stock-quotes-grid-item" />
+                                <div class="stock-quotes-grid-percent" />
+                            </div>
+                        }
+                    </div>
+                    <div>
+
+                        @for (int i = 0; i < 0xA; i++)
+                        {
+                            <div class="stock-quotes-grid-item-container">
+                            </div>
+                        }
+                    </div>
+                    <div>
+                    </div>
+                    <div class="stock-quotes-grid-item-container">
+                        <div class="stock-quotes-grid-item" id="stock-quotes-grid-time" />
+                    </div>
+                    <div>
+                    </div>
+                </div>
+                break;
+        }
+    </div>
+}
+else
+{
+    <div class="display">
+        <div class="loader">
+            <div class="action-container">
+                <strong>
+                    <em>This is the @((++Condition.Visitant).ToString("N0")) screen adjustment.</em>
+                </strong>
+            </div>
+        </div>
+    </div>
+}

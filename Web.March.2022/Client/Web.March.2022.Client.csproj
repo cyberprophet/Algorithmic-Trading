@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Client</AssemblyName>
+    <RootNamespace>ShareInvest.Client</RootNamespace>
+    <ApplicationIcon>server_home.ico</ApplicationIcon>
+    <Version>0.3.29.2022</Version>
+    <Authors>cyberprophet</Authors>
+    <Company>ShareInvest</Company>
+    <Copyright>Copyright ⓒ 2022, ShareInvest Corp.</Copyright>
+    <Product>Algorithmic Trading</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\images\pause.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\images\pause.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="server_home.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\pause.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.3" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Models.March.2022\Models.March.2022.csproj" />
+  </ItemGroup>
+
+</Project>

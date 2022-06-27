@@ -1,0 +1,719 @@
+﻿input[type="range"]
+{
+    -webkit-appearance: none;
+    margin-left: 20px;
+    border-radius: 15px;
+    width: 100px;
+    height: 6px;
+    background: #11101d;
+    cursor: pointer
+}
+
+    input[type="range"]::-webkit-slider-thumb
+    {
+        -webkit-appearance: none;
+        height: 14px;
+        width: 14px;
+        border-radius: 50%;
+        outline: none;
+        border: none;
+        background: #2f3a4b
+    }
+
+#map
+{
+    height: calc(100vh - 56px);
+    margin: -1.1rem -1.5rem 0 -2rem
+}
+
+#grid-container
+{
+    z-index: 11;
+    opacity: .75;
+    left: .65rem;
+    top: 7.15rem;
+    position: absolute
+}
+
+#float-end-container
+{
+    opacity: .925;
+    position: absolute;
+    top: 56px;
+    right: 10px;
+}
+
+#stock-quotes-grid-sell-price
+{
+    background: linear-gradient(to top, #171b29, #000080 35%)
+}
+
+#stock-quotes-grid-buy-price
+{
+    background: linear-gradient(to top, #800000 5%, #171b29)
+}
+
+.float-none-container
+{
+    display: none
+}
+
+.float-width-container
+{
+    padding: 10px 0 0 0
+}
+
+.stock-quotes-grid-container
+{
+    color: #fff;
+    width: 23.815rem;
+    display: grid;
+    background-color: #171b29;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 10fr 10fr 1fr;
+    border-radius: 0 0 .75rem .75rem
+}
+
+.stock-quotes-grid-item-container
+{
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #171b29
+}
+
+.stock-quotes-grid-item
+{
+    font-weight: bold
+}
+
+.stock-quotes-grid-price
+{
+    padding: .25rem .975rem .15rem 0
+}
+
+.stock-quotes-grid-percent
+{
+    right: .25rem;
+    bottom: .35rem;
+    position: absolute;
+    font-size: x-small;
+    font-family: Brush Script MT, Brush Script Std, Lucida Calligraphy, Lucida Handwriting, Apple Chancery, cursive
+}
+
+.grid-hide-button
+{
+    width: 155px;
+    height: 30px;
+    position: absolute;
+    border-radius: 10px 0 0 0;
+    margin-top: 9px;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(-45deg, transparent 20px,#252837 0)
+}
+
+.grid-hide-time
+{
+    text-align: center;
+    font-family: fantasy;
+    font-size: 13px;
+    width: 100%;
+    color: #808080;
+    text-shadow: .5px .5px #e0e0e0
+}
+
+.hide-button
+{
+    width: 15px;
+    height: 15px;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    margin-left: 10px;
+    background-image: url(./images/hide_button.svg)
+}
+
+.grid-header-flex
+{
+    display: flex;
+    height: 80px
+}
+
+.grid-sub-wrap
+{
+    background-color: #171b29;
+    width: 135px;
+    height: 55px;
+    margin-top: 25px
+}
+
+.grid-opacity-slider
+{
+    margin-top: 32px;
+    margin-left: 20px;
+    -webkit-appearance: none;
+    background: transparent;
+    width: 100px;
+    height: 4px;
+    background-color: #3c4053;
+    border-radius: 15px;
+    position: absolute
+}
+
+.grid-chart-scroller
+{
+    height: 31vh
+}
+
+.grid-chart-container
+{
+    height: 76.25vh;
+    min-width: -webkit-fill-available;
+    margin: 0 0 .75rem 0
+}
+
+.grid-account-chart-container
+{
+    height: 59vh;
+    min-width: -webkit-fill-available;
+    margin: 0 0 1.25rem 0
+}
+
+.grid-stock-chart-scroller
+{
+    height: 93%
+}
+
+.grid-stock-period-scroller
+{
+    height: 7%
+}
+
+.grid-account-chart-scroller
+{
+    height: 93%
+}
+
+.grid-account-period-scroller
+{
+    height: 7%
+}
+
+.grid-tab-background
+{
+    width: -webkit-fill-available;
+    background: linear-gradient(135deg, transparent 20px,#171b29 0);
+    border-radius: 0 10px 0 0
+}
+
+.grid-sub-tab-background
+{
+    padding: .25rem .15rem 0 0
+}
+
+.grid-tab-wrap-gradient
+{
+    height: 10px;
+    margin-left: 10px;
+    border-radius: 10px 10px 0 0;
+    background: linear-gradient(135deg, transparent 13px,#171b29 0);
+    z-index: 30
+}
+
+.grid-tab-wrap
+{
+    display: flex;
+    justify-content: flex-end
+}
+
+.grid-tab-input[type="radio"]
+{
+    display: none
+}
+
+.grid-tab-label
+{
+    color: rgb(243, 243, 243);
+    font-size: 14px;
+    width: 100px;
+    height: 50px;
+    padding: 0 5px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    transition: all .2s;
+    z-index: 30
+}
+
+    .grid-tab-label:hover
+    {
+        color: rgb(41, 66, 207);
+        cursor: pointer;
+        font-weight: 700
+    }
+
+.grid-tab-input:checked + .grid-tab-label
+{
+    color: #fff;
+    font-weight: 900;
+    background: linear-gradient(to bottom, #252837, #171b29);
+    border-radius: 10px 10px 0 0
+}
+
+.grid-tab-input:disabled + .grid-tab-label
+{
+    color: #363636
+}
+
+.grid-scroller
+{
+    color: #fff;
+    font-size: 13px;
+    resize: both;
+    overflow-y: scroll;
+    background-color: #171b29;
+    max-height: 77.75vh;
+    max-width: 95vw;
+    min-width: -webkit-fill-available;
+    border-radius: 0 0 .75rem .75rem
+}
+
+.grid-stock-scroller
+{
+    height: 29.75rem;
+    padding: 0 0 0 .15rem
+}
+
+.grid-stock-container
+{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11.25rem, 1fr))
+}
+
+.grid-stock-item
+{
+    font-weight: bold;
+    padding: 0 0 .75rem 0;
+    text-shadow: .75px .75px #696969
+}
+
+.grid-stock-item-code
+{
+    color: gold;
+    font-size: x-small;
+    text-align: start;
+    padding: 0 0 0 .25rem
+}
+
+.grid-stock-item-ellipsis
+{
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    text-overflow: ellipsis;
+    width: 9.725rem
+}
+
+.grid-stock-item-btn
+{
+    color: #fff;
+    display: block !important;
+    border: none !important;
+    background-color: transparent !important;
+    padding: 0 !important;
+    font-weight: bold !important;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+    text-shadow: .75px .75px #696969
+}
+
+    .grid-stock-item-btn:hover
+    {
+        color: #f0f0f0;
+        text-shadow: .75px .75px #353535
+    }
+
+    .grid-stock-item-btn:focus
+    {
+        color: #f5f5f5;
+        text-shadow: .5px .5px #800000
+    }
+
+.grid-stock-item-non-link-ellipsis
+{
+    font-size: larger
+}
+
+.grid-stock-item-information-container
+{
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr 1fr .5fr;
+    display: grid;
+    align-items: center;
+    padding: 0 .25rem 0 0
+}
+
+.grid-stock-item-price-up
+{
+    color: red;
+    text-shadow: .75px .75px #800000
+}
+
+.grid-stock-item-price-down
+{
+    color: deepskyblue;
+    text-shadow: .75px .75px #000080
+}
+
+.grid-stock-item-price-flat
+{
+    color: #808080;
+    text-shadow: .5px .5px #e0e0e0
+}
+
+.grid-stock-item-rate
+{
+    font-size: smaller;
+    font-weight: normal
+}
+
+.grid-stock-item-previous-day
+{
+    font-size: smaller;
+    font-weight: normal
+}
+
+.grid-stock-item-volume
+{
+    font-size: smaller;
+    font-weight: normal
+}
+
+.grid-stock-item-transaction-amount
+{
+    font-size: smaller;
+    font-weight: normal
+}
+
+.grid-stock-item-information
+{
+    text-align: end
+}
+
+    .grid-stock-item-information:nth-child(1)
+    {
+        grid-row: span 2
+    }
+
+    .grid-stock-item-information:nth-child(6)
+    {
+        height: 100%;
+        grid-column: span 3
+    }
+
+.grid-stock-item-chart
+{
+    float: left;
+    height: inherit
+}
+
+.grid-order-by-container
+{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr))
+}
+
+.grid-account-scroller
+{
+    height: 11.75rem
+}
+
+::-webkit-resizer
+{
+    background-color: dimgray
+}
+
+::-webkit-scrollbar
+{
+    width: .5rem
+}
+
+::-webkit-scrollbar-track
+{
+    background: #1b2433
+}
+
+::-webkit-scrollbar-thumb:hover
+{
+    border-radius: .25rem;
+    background-color: #dcdcdc
+}
+
+.grid-balance
+{
+    margin: 0 0 .5rem 0
+}
+
+.grid-account-container
+{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr))
+}
+
+.grid-balance-container
+{
+    display: grid;
+    text-align: end;
+    grid-template-columns: repeat(auto-fit, minmax(5.75rem, 1fr))
+}
+
+.grid-account-item
+{
+    text-align: end;
+    padding: 0 .5rem 0 0
+}
+
+.grid-balance-item
+{
+    padding: 0 .5rem 0 0
+}
+
+.grid-account-item-subject
+{
+    font-size: smaller;
+    color: gray
+}
+
+.grid-account-item-contents
+{
+    margin: 0 0 .5rem 0
+}
+
+.grid-balance-blue-color
+{
+    color: deepskyblue
+}
+
+.grid-balance-red-color
+{
+    color: red
+}
+
+.grid-account-label
+{
+    margin: .5rem 0
+}
+
+.grid-account-span
+{
+    margin-left: .5rem
+}
+
+.rendering-container
+{
+    position: absolute;
+    cursor: pointer;
+    text-align: center
+}
+
+.rendering-quote-container
+{
+    padding: 10px;
+    right: 0px;
+    top: 56px;
+    margin: 10px;
+    width: 40px;
+    height: 40px;
+    color: #444
+}
+
+    .rendering-quote-container:hover
+    {
+        color: #fbfbfb;
+        border-radius: .5rem;
+        box-shadow: 40px 0 0 0 rgba(0, 0, 0, 0.25) inset, -40px 0 0 0 rgba(0, 0, 0, 0.25) inset
+    }
+
+.rendering-operation-container
+{
+    padding: 4px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    bottom: 142px
+}
+
+    .rendering-operation-container:hover
+    {
+        color: #800000;
+        text-shadow: .5px .5px #a00000
+    }
+
+.rendering-icon
+{
+    cursor: pointer
+}
+
+.play-icon
+{
+    background-image: url(./images/play.svg)
+}
+
+.pause-icon
+{
+    background-image: url(./images/pause.svg)
+}
+
+.account-control
+{
+    width: auto;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    font-size: inherit;
+    background-color: inherit;
+    color: snow;
+    padding: .175rem 0
+}
+
+.account-table
+{
+    color: inherit;
+    border-color: dimgray
+}
+
+.btn-account
+{
+    font-size: inherit;
+    padding: .175rem .75rem;
+    margin: 0 0 0 .325rem
+}
+
+.chart-icon
+{
+    width: 1.75rem;
+    height: 1.75rem;
+    background-image: url(./images/chart.svg)
+}
+
+.show-btn
+{
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 1.75rem;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #11101d;
+    position: absolute;
+    cursor: pointer;
+    bottom: 1.75rem;
+    left: .5rem;
+    z-index: 15
+}
+
+.action-container
+{
+    display: block;
+    position: center;
+    font-weight: bolder;
+    color: navy
+}
+
+.lookup-container
+{
+    width: 100%;
+    font-weight: bolder;
+    color: navy;
+    position: fixed;
+    margin: 0 0 0 -1.75rem
+}
+
+.lookup-container-index
+{
+    z-index: 5
+}
+
+@media (max-width: 641px)
+{
+    #map
+    {
+        height: calc(100vh - 30px);
+        margin: -1.1rem 0 0 0
+    }
+
+    #grid-container
+    {
+        top: 3.75rem;
+        max-width: 95%
+    }
+
+    #float-end-container
+    {
+        top: 31px;
+        right: unset;
+        padding: .25rem;
+        width: -webkit-fill-available
+    }
+
+    .grid-tab-wrap-gradient
+    {
+        width: 95%
+    }
+
+    .grid-tab-label
+    {
+        font-size: 9px;
+        width: 3.5rem
+    }
+
+    .grid-scroller
+    {
+        font-size: 7px
+    }
+
+    .grid-stock-container
+    {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(10.35rem, 1fr))
+    }
+
+    .grid-stock-item
+    {
+        font-weight: normal;
+        padding: 0 0 .5rem 0
+    }
+
+    .grid-stock-item-code
+    {
+        font-size: xx-small
+    }
+
+    .grid-stock-item-non-link-ellipsis
+    {
+        font-size: small
+    }
+
+    .grid-hide-time
+    {
+        font-size: x-small
+    }
+
+    .lookup-container
+    {
+        margin: 0 0 0 1.25rem
+    }
+
+    .rendering-quote-container
+    {
+        top: 30px;
+        margin: unset
+    }
+
+    .stock-quotes-grid-container
+    {
+        width: auto
+    }
+}
